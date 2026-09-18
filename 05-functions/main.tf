@@ -4,9 +4,9 @@ resource "aws_instance" "roboshop" {
     instance_type = var.aws_instance_type
     vpc_security_group_ids = [aws_security_group.roboshop[count.index].id,
     aws_security_group.common.id]
-    tags = {
-      Name = "${var.project}-${var.environment}-${var.instances[count.index]}"
-    }
+    tags = merge(var.common_tags, {
+      Name = "terraform-demo-1"
+    })  
 }
 #it creates the default VPCS
 resource "aws_security_group" "roboshop" {
@@ -21,9 +21,9 @@ resource "aws_security_group" "roboshop" {
     cidr_blocks      = var.cidr
   }
 
-  tags = {
-   Name = "${var.project}-${var.environment}-${var.instances[count.index]}"
-  }
+  tags = merge(var.common_tags, {
+      Name = "allow-terraform"
+    })
    # first it creates theSG, modify the instance SG.
   lifecycle {
     create_before_destroy = true

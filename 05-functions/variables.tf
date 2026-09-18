@@ -21,10 +21,10 @@ variable "aws_instance_type" {
 #       Environment = "dev"
 #     }
 # }
-variable "sg_name" {
-  type        = string
-  default     = "allow_terraform"
-}
+# variable "sg_name" {
+#   type        = string
+#   default     = "allow_terraform"
+# }
 variable "port" {
   type        = number
   default     = 0
@@ -60,4 +60,10 @@ variable "zone_id" {
 variable "domain_name" {
   type        = string
   default     = "vinaydevops.online"
+}
+variable "common_tags"{
+  default = {
+    Project     = "roboshop"
+    Environment = "prod"
+  }
 }

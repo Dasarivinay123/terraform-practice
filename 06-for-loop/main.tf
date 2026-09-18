@@ -1,17 +1,19 @@
 resource "aws_instance" "roboshop" {
-    count = length(var.instances)
+    # count = length(var.instances)
+    for_each = var.instances
     ami = var.ami_id
     instance_type = var.aws_instance_type
-    vpc_security_group_ids = [aws_security_group.roboshop[count.index].id,
+    vpc_security_group_ids = [aws_security_group.roboshop[each.key].id,
     aws_security_group.common.id]
     tags = {
-      Name = "${var.project}-${var.environment}-${var.instances[count.index]}"
+      Name = "${var.project}-${var.environment}-${each.key}"
     }
 }
 #it creates the default VPCS
 resource "aws_security_group" "roboshop" {
-  count = length(var.instances)
-  name        = "${var.project}-${var.environment}-${var.instances[count.index]}"
+  # count = length(var.instances)
+  for_each = var.instances
+  name        = "${var.project}-${var.environment}-${each.key}"
   description = "Allow TLS inbound traffic and all outbound traffic"
 
   egress {
@@ -22,7 +24,7 @@ resource "aws_security_group" "roboshop" {
   }
 
   tags = {
-   Name = "${var.project}-${var.environment}-${var.instances[count.index]}"
+   Name = "${var.project}-${var.environment}-${each.key}"
   }
    # first it creates theSG, modify the instance SG.
   lifecycle {
