@@ -32,19 +32,24 @@ resource "aws_instance" "aws_demo" {
       host        = self.public_ip
     }
 
-    provisioner "remote-exec" {
-      inline = [
-        "sudo dnf install nginx -y",
-        "sudo systemctl start nginx"
-      ]
-    }
+    # provisioner "remote-exec" {
+    #   inline = [
+    #     "sudo dnf install nginx -y",
+    #     "sudo systemctl start nginx"
+    #   ]
+    # }
 
-    provisioner "remote-exec" {
-      when = destroy
-      inline = [
-        "sudo systemctl stop nginx"
-      ]
-    }
+    # provisioner "remote-exec" {
+    #   when = destroy
+    #   inline = [
+    #     "sudo systemctl stop nginx"
+    #   ]
+    # }
+    
+      provisioner "file" {
+      source      = "script.sh"
+      destination = "/tmp/script.sh"
+  }
 }
 #it creates the default VPCS
 resource "aws_security_group" "allow_terraform" {
@@ -61,6 +66,12 @@ resource "aws_security_group" "allow_terraform" {
   ingress {
     from_port        = 22
     to_port          = 22
+    protocol         = "tcp" # all traffic
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
+    ingress {
+    from_port        = 80
+    to_port          = 80
     protocol         = "tcp" # all traffic
     cidr_blocks      = ["0.0.0.0/0"]
   }
